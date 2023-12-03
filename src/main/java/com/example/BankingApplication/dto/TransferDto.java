@@ -1,10 +1,7 @@
 package com.example.BankingApplication.dto;
 
 import com.example.BankingApplication.entity.Account;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +20,7 @@ public class TransferDto {
     UUID toAccount;
 
     @Pattern(regexp = "\\d+", message = "Pin должен содержать только цифры")
+    @Size(min = 4, max = 4, message = "Account pin must be 4 characters long")
     @NotBlank
     String pin;
 
