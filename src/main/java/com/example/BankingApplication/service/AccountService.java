@@ -9,9 +9,7 @@ import java.util.UUID;
 public interface AccountService {
     void createAccount(String name, String pin);
     List<Account> getAllAccounts();
-
     Account getAccountById(UUID accountId);
-
     void withdraw(UUID accountId, String pin, BigDecimal amount);
     void transfer(UUID fromAccountId, UUID toAccountId, String pin, BigDecimal amount);
     void deposit(UUID accountId, BigDecimal amount);

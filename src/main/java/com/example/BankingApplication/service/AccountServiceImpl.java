@@ -48,7 +48,7 @@ public class AccountServiceImpl implements AccountService {
         Account account = accountRepository.findById(accountId).orElseThrow(() ->
                 new EntityNotFoundException(String.format("Account with id#%s not found", accountId)));
 
-        if (account.getPin().equals(pin)) {
+        if (pin.equals(account.getPin())) {
             if (account.getBalance().compareTo(amount) >= 0) {
                 account.setBalance(account.getBalance().subtract(amount));
             } else {

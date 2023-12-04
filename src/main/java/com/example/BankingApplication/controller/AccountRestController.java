@@ -16,14 +16,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("account")
 @AllArgsConstructor
 public class AccountRestController {
-    AccountService accountService;
-    TransactionService transactionService;
-    AccountMapper accountMapper;
+    private AccountService accountService;
+    private TransactionService transactionService;
+    private AccountMapper accountMapper;
 
    @PostMapping
     public ResponseEntity<String> create(@RequestBody @Valid AccountRequestDto dto){
@@ -35,11 +36,10 @@ public class AccountRestController {
    @GetMapping("/accounts")
     public ResponseEntity<List<AccountResponseDto>> getAllAccounts(){
        List<Account> accountList= accountService.getAllAccounts();
-       List<AccountResponseDto> accountResponseDtoList = new ArrayList<>();
-       for (Account account: accountList) {
-           AccountResponseDto accountResponseDto=accountMapper.convertToAccountResponseDto(account);
-           accountResponseDtoList.add(accountResponseDto);
-       }
+
+       List<AccountResponseDto> accountResponseDtoList = accountList.stream()
+               .map(a->accountMapper.convertToAccountResponseDto(a)).collect(Collectors.toList());
+
        return ResponseEntity.status(HttpStatus.OK).body(accountResponseDtoList);
    }
 
@@ -69,11 +69,10 @@ public class AccountRestController {
     public ResponseEntity<List<TransactionResponseDto>> getAllAccountTransactions(@PathVariable @NotNull UUID accountId) {
        Account account = accountService.getAccountById(accountId);
        List<Transaction> list = transactionService.getAccountTransactions(account);
-       List<TransactionResponseDto> transactionResponseDtoList = new ArrayList<>();
-       for (Transaction transaction: list) {
-           TransactionResponseDto transactionResponseDto = accountMapper.convertToTransactionResponseDto(transaction);
-           transactionResponseDtoList.add(transactionResponseDto);
-       }
+
+       List<TransactionResponseDto> transactionResponseDtoList = list.stream()
+               .map(a -> accountMapper.convertToTransactionResponseDto(a)).collect(Collectors.toList());
+
        return ResponseEntity.status(HttpStatus.OK).body(transactionResponseDtoList);
    }
 
