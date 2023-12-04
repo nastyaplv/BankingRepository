@@ -3,6 +3,9 @@ package com.example.BankingApplication.controller;
 import com.example.BankingApplication.dto.*;
 import com.example.BankingApplication.entity.Account;
 import com.example.BankingApplication.entity.Transaction;
+import com.example.BankingApplication.exception.EntityNotFoundException;
+import com.example.BankingApplication.exception.IncorrectPinException;
+import com.example.BankingApplication.exception.InsuficientFundsException;
 import com.example.BankingApplication.service.AccountService;
 import com.example.BankingApplication.service.TransactionService;
 import com.example.BankingApplication.util.AccountMapper;
@@ -13,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -75,5 +77,19 @@ public class AccountRestController {
 
        return ResponseEntity.status(HttpStatus.OK).body(transactionResponseDtoList);
    }
+
+    @ExceptionHandler({IncorrectPinException.class, InsuficientFundsException.class, EntityNotFoundException.class})
+    public ResponseEntity<String> handleExceptions(Exception exception) {
+
+        if (exception instanceof IncorrectPinException) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incorrect pin entered");
+        } else if (exception instanceof InsuficientFundsException) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Insufficient funds");
+        } else if (exception instanceof EntityNotFoundException) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Entity not found");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
+        }
+    }
 
 }
